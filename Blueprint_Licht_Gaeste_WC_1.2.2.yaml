@@ -1,0 +1,225 @@
+blueprint:
+  name: Licht Gäste WC Automatisierung 1.2.2
+  description: Automatisierung für das Licht und die Besetzt-Anzeige im Gäste WC.
+  domain: automation
+  input:
+    tuere_sensor:
+      name: Türsensor
+      description: Der Sensor, der die Türöffnung erkennt.
+      selector:
+        entity:
+          domain: binary_sensor
+    lichtschalter:
+      name: Lichtschalter
+      description: Der Lichtschalter im Gäste WC.
+      selector:
+        entity:
+          domain: light
+    pir_sensor:
+      name: Bewegungsmelder
+      description: Der Bewegungsmelder im Gäste WC.
+      selector:
+        entity:
+          domain: binary_sensor
+    occupied_boolean:
+      name: Besetzt Boolean
+      description: Boolean, der den Besetzt-Zustand anzeigt.
+      selector:
+        entity:
+          domain: input_boolean
+    licht_automatik_abschalten:
+      name: Lichtautomatik Abschalten Boolean
+      description: Boolean, um die Lichtautomatik abzuschalten.
+      selector:
+        entity:
+          domain: input_boolean
+
+trigger:
+  - platform: state
+    entity_id: !input tuere_sensor
+    from: 'off'
+    to: 'on'
+  - platform: state
+    entity_id: !input tuere_sensor
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+  - platform: state
+    entity_id: !input pir_sensor
+    from: 'off'
+    to: 'on'
+  - platform: state
+    entity_id: !input pir_sensor
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  - platform: state
+    entity_id: !input tuere_sensor
+    from: 'off'
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+
+
+condition: []
+
+action:
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: !input tuere_sensor
+            state: 'on'
+          - condition: state
+            entity_id: !input occupied_boolean
+            state: 'off'
+          - condition: state
+            entity_id: !input lichtschalter
+            state: 'off'
+          - condition: state
+            entity_id: !input licht_automatik_abschalten
+            state: 'off'
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: !input lichtschalter
+
+      - conditions:
+          - condition: state
+            entity_id: !input tuere_sensor
+            state: 'off'
+            for:
+              hours: 0
+              minutes: 0
+              seconds: 5
+          - condition: state
+            entity_id: !input occupied_boolean
+            state: 'off'
+          - condition: state
+            entity_id: !input licht_automatik_abschalten
+            state: 'off'
+          - condition: state
+            entity_id: !input lichtschalter
+            state: 'on'
+          - condition: state
+            entity_id: !input pir_sensor
+            state: 'on'
+        sequence:
+          - service: input_boolean.turn_on
+            target:
+              entity_id: !input occupied_boolean
+
+      - conditions:
+          - condition: state
+            entity_id: !input tuere_sensor
+            state: 'on'
+          - condition: state
+            entity_id: !input licht_automatik_abschalten
+            state: 'off'
+          - condition: state
+            entity_id: !input occupied_boolean
+            state: 'on'
+          - condition: state
+            entity_id: !input lichtschalter
+            state: 'on'
+        sequence:
+          - delay:
+              hours: 0
+              minutes: 0
+              seconds: 10
+          - service: input_boolean.turn_off
+            target:
+              entity_id: !input occupied_boolean
+          - service: light.turn_off
+            target:
+              entity_id: !input lichtschalter
+
+      - conditions:
+          - condition: state
+            entity_id: !input pir_sensor
+            state: 'on'
+          - condition: state
+            entity_id: !input licht_automatik_abschalten
+            state: 'off'
+          - condition: state
+            entity_id: !input occupied_boolean
+            state: 'off'
+          - condition: state
+            entity_id: !input lichtschalter
+            state: 'off'
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: !input lichtschalter
+
+      - conditions:
+          - condition: state
+            entity_id: !input pir_sensor
+            state: 'off'
+            for:
+              hours: 0
+              minutes: 1
+              seconds: 0
+          - condition: state
+            entity_id: !input licht_automatik_abschalten
+            state: 'off'
+          - condition: state
+            entity_id: !input lichtschalter
+            state: 'on'
+          - condition: state
+            entity_id: !input occupied_boolean
+            state: 'off'
+        sequence:
+          - service: light.turn_off
+            target:
+              entity_id: !input lichtschalter
+
+      - conditions:
+          - condition: state
+            entity_id: !input tuere_sensor
+            state: 'on'
+            for:
+              hours: 0
+              minutes: 1
+              seconds: 0
+          - condition: state
+            entity_id: !input pir_sensor
+            state: 'off'
+          - condition: state
+            entity_id: !input lichtschalter
+            state: 'on'
+          - condition: state
+            entity_id: !input occupied_boolean
+            state: 'off'
+          - condition: state
+            entity_id: !input licht_automatik_abschalten
+            state: 'off'
+        sequence:
+          - delay:
+              hours: 0
+              minutes: 0
+              seconds: 30
+          - service: light.turn_off
+            target:
+              entity_id: !input lichtschalter
+
+      - conditions:
+          - condition: state
+            entity_id: !input lichtschalter
+            state: 'off'
+            for:
+              hours: 0
+              minutes: 1
+              seconds: 0
+        sequence:
+          - service: input_boolean.turn_off
+            target:
+              entity_id: !input occupied_boolean
+mode: single
