@@ -1,0 +1,81 @@
+alias: Tablet Steuerung 1.0
+description: "Schaltet das Display ein und aus und wechselt zu den Fotos oder Dashboard"
+triggers:
+  - trigger: state
+    entity_id:
+      - binary_sensor.presence_sensor_fp2_4611_presence_sensor_1
+    to: null
+    id: anwesend
+  - trigger: state
+    entity_id:
+      - binary_sensor.presence_sensor_fp2_4611_presence_sensor_9
+    id: sideboard_frei
+    to: null
+conditions: []
+actions:
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: binary_sensor.presence_sensor_fp2_4611_presence_sensor_9
+            state: "on"
+        sequence:
+          - action: button.press
+            metadata: {}
+            data: {}
+            target:
+              entity_id: button.lenovo_tab_m10_fhd_plus_in_den_vordergrund_rucken
+        alias: Dashboard öffnen
+      - conditions:
+          - condition: state
+            entity_id: binary_sensor.presence_sensor_fp2_4611_presence_sensor_9
+            state: "off"
+        sequence:
+          - wait_for_trigger:
+              - trigger: state
+                entity_id:
+                  - binary_sensor.presence_sensor_fp2_4611_presence_sensor_9
+                to: "on"
+            timeout:
+              hours: 0
+              minutes: 2
+              seconds: 0
+              milliseconds: 0
+          - action: button.press
+            metadata: {}
+            data: {}
+            target:
+              entity_id: button.lenovo_tab_m10_fhd_plus_in_den_hintergrund_rucken
+        alias: Fotos öffnen
+      - conditions:
+          - condition: state
+            entity_id: binary_sensor.presence_sensor_fp2_4611_presence_sensor_1
+            state: "on"
+        sequence:
+          - action: switch.turn_on
+            metadata: {}
+            data: {}
+            target:
+              entity_id: switch.lenovo_tab_m10_fhd_plus_bildschirm
+        alias: Bildschirm an bei Anwesenheit
+      - conditions:
+          - condition: state
+            entity_id: binary_sensor.presence_sensor_fp2_4611_presence_sensor_1
+            state: "off"
+        sequence:
+          - wait_for_trigger:
+              - trigger: state
+                entity_id:
+                  - binary_sensor.presence_sensor_fp2_4611_presence_sensor_1
+                to: "on"
+            timeout:
+              hours: 0
+              minutes: 15
+              seconds: 0
+              milliseconds: 0
+          - action: switch.turn_off
+            metadata: {}
+            data: {}
+            target:
+              entity_id: switch.lenovo_tab_m10_fhd_plus_bildschirm
+        alias: Bildschirm aus bei Abwesenheit
+mode: restart
