@@ -1,0 +1,85 @@
+alias: Tablet Kamera Popup
+description: "Kamera Popup wenn bewegung vor der haustüre erkannt wird."
+triggers:
+  - entity_id: binary_sensor.eingang_all_occupancy
+    to: null
+    trigger: state
+conditions: []
+actions:
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: binary_sensor.eingang_all_occupancy
+            state: "on"
+        sequence:
+          - if:
+              - condition: state
+                entity_id: switch.lenovo_tab_m10_fhd_plus_bildschirm
+                state: "off"
+            then:
+              - target:
+                  entity_id: switch.lenovo_tab_m10_fhd_plus_bildschirm
+                action: switch.turn_on
+                data: {}
+              - variables:
+                  screen_was_off: true
+            else:
+              - variables:
+                  screen_was_off: false
+          - target:
+              entity_id: button.lenovo_tab_m10_fhd_plus_in_den_vordergrund_rucken
+            action: button.press
+            data: {}
+          - data:
+              content:
+                type: picture-elements
+                elements:
+                  - type: icon
+                    icon: mdi:close-box
+                    style:
+                      left: 97%
+                      top: 6%
+                      "--mdc-icon-size": 50px
+                    tap_action:
+                      action: call-service
+                      service: browser_mod.close_popup
+                      service_data:
+                        browser_id: Wohntab
+                  - type: state-icon
+                    entity: binary_sensor.eingang_all_occupancy
+                    style:
+                      left: 10%
+                      top: 90%
+                camera_image: camera.front
+                camera_view: live
+              browser_id:
+                - aeba1f021f81d891e1a000ffe074eccd
+              size: fullscreen
+            action: browser_mod.popup
+      - conditions:
+          - condition: state
+            entity_id: binary_sensor.eingang_all_occupancy
+            state: "off"
+        sequence:
+          - wait_for_trigger:
+              - entity_id: binary_sensor.eingang_all_occupancy
+                to: "on"
+                trigger: state
+            timeout:
+              seconds: 15
+          - condition: state
+            entity_id: binary_sensor.presence_sensor_fp2_4611_presence_sensor_1
+            state: "off"
+          - data:
+              browser_id:
+                - aeba1f021f81d891e1a000ffe074eccd
+            action: browser_mod.close_popup
+          - if:
+              - condition: template
+                value_template: "{{ screen_was_off }}"
+            then:
+              - target:
+                  entity_id: switch.lenovo_tab_m10_fhd_plus_bildschirm
+                action: switch.turn_off
+                data: {}
+mode: single
