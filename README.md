@@ -1,2 +1,2 @@
 # Ha
-Scripte for HA
+Blueprints und Auromatisierungen
