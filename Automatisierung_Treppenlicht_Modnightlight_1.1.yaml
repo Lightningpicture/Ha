@@ -1,0 +1,98 @@
+alias: Licht Treppe Unten mit Nacht-Bewegungsmelder 1.1
+description: "Treppenlicht Steuerung mit Lidl nachlicht"
+triggers:
+  - entity_id: binary_sensor.pir_treppe_unten_motion_detection
+    from: "off"
+    to: "on"
+    trigger: state
+  - entity_id: binary_sensor.pir_flur_og_sensor_state_any
+    from: "off"
+    to: "on"
+    trigger: state
+conditions:
+  - condition: or
+    conditions:
+      - condition: template
+        value_template: >-
+          {{ today_at(states('input_datetime.day')) + timedelta(hours=2) <=
+          now() <= today_at(states('input_datetime.nacht')) }}
+      - condition: template
+        value_template: >-
+          {{ now() < today_at(states('input_datetime.day')) + timedelta(hours=2)
+          or now() > today_at(states('input_datetime.nacht')) }}
+actions:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: >-
+              {{ today_at(states('input_datetime.day')) + timedelta(hours=2) <=
+              now() <= today_at(states('input_datetime.nacht')) }}
+          - condition: numeric_state
+            entity_id: sensor.pir_flur_og_illuminance
+            below: 60
+        sequence:
+          - target:
+              entity_id: >-
+                light.lichtschalter_treppe_ug_lichtschalter_lichtschalter_treppe_ug_s1
+            action: light.turn_on
+            data: {}
+      - conditions:
+          - condition: template
+            value_template: >-
+              {{ now() < today_at(states('input_datetime.day')) +
+              timedelta(hours=2) or now() >
+              today_at(states('input_datetime.nacht')) }}
+        sequence:
+          - data:
+              brightness_step_pct: 30
+              transition: 60
+            target:
+              entity_id: light.lidl_treppe_unten
+            action: light.turn_on
+  - wait_for_trigger:
+      - entity_id: binary_sensor.pir_treppe_unten_motion_detection
+        to: "off"
+        trigger: state
+    timeout: "00:00:10"
+  - delay: >
+      {{ local_motion_delay_day if today_at(states('input_datetime.day')) +
+      timedelta(hours=2) <= now() <= today_at(states('input_datetime.nacht'))
+      else local_motion_delay_night }}
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: >-
+              {{ today_at(states('input_datetime.day')) + timedelta(hours=2) <=
+              now() <= today_at(states('input_datetime.nacht')) }}
+        sequence:
+          - target:
+              entity_id: >-
+                light.lichtschalter_treppe_ug_lichtschalter_lichtschalter_treppe_ug_s1
+            action: light.turn_off
+            data: {}
+      - conditions:
+          - condition: template
+            value_template: >-
+              {{ now() < today_at(states('input_datetime.day')) +
+              timedelta(hours=2) or now() >
+              today_at(states('input_datetime.nacht')) }}
+        sequence:
+          - data:
+              transition: 300
+              brightness_pct: 5
+            target:
+              entity_id: light.lidl_treppe_unten
+            action: light.turn_on
+          - delay:
+              minutes: 5
+          - target:
+              entity_id: light.lidl_treppe_unten
+            action: light.turn_off
+            data: {}
+mode: restart
+max_exceeded: silent
+variables:
+  local_night_end: input_datetime.day
+  local_night_start: input_datetime.nacht
+  local_motion_delay_day: 20
+  local_motion_delay_night: 10
