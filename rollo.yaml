@@ -37,16 +37,10 @@ camera_target:
 object_groups: []
 entities:
   - entity: cover.shellyswitch25_3494546b941d
-    type3d: door
-    door:
-      doortype: slide
-      side: up
-      direction: inner
-      percentage: "{{ 0 if is_state('cover.shellyswitch25_3494546b941d', 'open') else 100 }}"
-      degrees: 45
+    type3d: cover
+    cover:
+      percentage: "{{ states('cover.shellyswitch25_3494546b941d') | float }}"
     object_id: sweethome3d_opening_on_rail_1_Roller_Shutter_back_179_266_750
-    hide:
-      state: open
 zoom_areas: []
 selectionMode: no
 editModeNotifications: yes
