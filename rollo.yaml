@@ -2,22 +2,23 @@ type: custom:floor3d-card
 path: /local/Test/
 name: Home
 objfile: test.obj
-lock_camera: "no"
-header: "yes"
-click: "no"
-overlay: "no"
+mtlfile: test.mtl
+lock_camera: no
+header: yes
+click: no
+overlay: no
 backgroundColor: "#aaaaaa"
-hideLevelsMenu: "no"
-globalLightPower: "0.8"
-shadow: "no"
-extralightmode: "no"
-show_axes: "no"
-sky: "no"
+hideLevelsMenu: no
+globalLightPower: 0.8
+shadow: no
+extralightmode: no
+show_axes: no
+sky: no
 overlay_bgcolor: transparent
 overlay_fgcolor: black
 overlay_alignment: top-left
-overlay_width: "33"
-overlay_height: "20"
+overlay_width: 33
+overlay_height: 20
 north:
   x: 0
   z: -1
@@ -33,27 +34,17 @@ camera_target:
   x: 37.36890424945437
   y: 18.64464320782064
   z: -82.55051697031719
+object_groups: []
 entities:
   - entity: cover.shellyswitch25_3494546b941d
     type3d: door
     door:
       doortype: slide
-      side: down 
+      side: down
       direction: inner
-      percentage: "{{ 100 if is_state('cover.shellyswitch25_3494546b941d', 'open') else 0 }}"  
-      degrees: "45"
-    object_id: sweethome3d_opening_on_rail_1_Roller_Shutter_blades_179_266_750
-    visibility:
-      - condition: state
-        entity_id: cover.shellyswitch25_3494546b941d
-        state: "open"
-        visibility: false 
-      - condition: state
-        entity_id: cover.shellyswitch25_3494546b941d
-        state: "closed"
-        visibility: true  
-zoom_areas:
-zoom: ""
-mtlfile: test.mtl
-selectionMode: "no"
-editModeNotifications: "yes"
+      percentage: "{{ 0 if is_state('cover.shellyswitch25_3494546b941d', 'open') else 100 }}"
+      degrees: 45
+    object_id: sweethome3d_opening_on_rail_1_Roller_Shutter_back_179_266_750
+zoom_areas: []
+selectionMode: no
+editModeNotifications: yes
