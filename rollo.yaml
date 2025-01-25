@@ -42,7 +42,7 @@ entities:
       doortype: slide
       side: down
       direction: inner
-      percentage: "{{ 0 if is_state('cover.shellyswitch25_3494546b941d', 'open') else 100 }}"
+      percentage: "{{ 100 if is_state('cover.shellyswitch25_3494546b941d', 'closed') else 0 }}"
       degrees: 45
     object_id: sweethome3d_opening_on_rail_1_Roller_Shutter_back_179_266_750
 zoom_areas: []
