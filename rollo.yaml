@@ -38,9 +38,10 @@ object_groups: []
 entities:
   - entity: cover.shellyswitch25_3494546b941d
     type3d: cover
-    cover:
-      percentage: "{{ states('cover.shellyswitch25_3494546b941d') | default(0) | float }}"
     object_id: sweethome3d_opening_on_rail_1_Roller_Shutter_back_179_266_750
+    cover:
+      pane: sweethome3d_opening_on_rail_1_Roller_Shutter_back_179_266_750
+      side: up
 zoom_areas: []
 selectionMode: no
 editModeNotifications: yes
