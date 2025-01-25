@@ -43,24 +43,13 @@ entities:
       side: up
       direction: inner
       percentage: "100"
-      degrees: "45"
-    object_id: sweethome3d_opening_on_rail_1_Roller_Shutter_back_179_266_750
-
-
-  - entity: cover.shellyswitch25_3494546b941d
-    type3d: door
-    door:
-      doortype: slide
-      side: up
-      direction: inner
-      percentage: "100"
       degrees: 45
     object_id: sweethome3d_opening_on_rail_1_Roller_Shutter_back_179_266_750
   - entity: cover.shellyswitch25_3494546b941d
     type3d: hide
     object_id: sweethome3d_opening_on_rail_1_Roller_Shutter_back_179_266_750
     hide:
-      state: open
+      state: closed
 zoom_areas: []
 selectionMode: no
 editModeNotifications: yes
