@@ -35,21 +35,25 @@ camera_target:
   z: -82.55051697031719
 entities:
   - entity: cover.shellyswitch25_3494546b941d
-    type3d: cover
+    type3d: door
+    door:
+      doortype: slide
+      side: down 
+      direction: inner
+      percentage: "{{ 100 if is_state('cover.shellyswitch25_3494546b941d', 'open') else 0 }}"  
+      degrees: "45"
     object_id: sweethome3d_opening_on_rail_1_Roller_Shutter_blades_179_266_750
-    cover:
-      pane: sweethome3d_opening_on_rail_1_Roller_Shutter_blades_179_266_750
-      side: down  # Korrekte Richtung: Öffnet von oben nach unten
-      percentage: "{{ 100 if is_state('cover.shellyswitch25_3494546b941d', 'open') else 0 }}"
     visibility:
       - condition: state
         entity_id: cover.shellyswitch25_3494546b941d
         state: "open"
-        visibility: false  # Ausblenden, wenn geöffnet
+        visibility: false 
       - condition: state
         entity_id: cover.shellyswitch25_3494546b941d
         state: "closed"
-        visibility: true  # Einblenden, wenn geschlossen
+        visibility: true  
+zoom_areas:
+zoom: ""
 mtlfile: test.mtl
 selectionMode: "no"
 editModeNotifications: "yes"
