@@ -56,17 +56,11 @@ entities:
       percentage: "100"
       degrees: 45
     object_id: sweethome3d_opening_on_rail_1_Roller_Shutter_back_179_266_750
-    visibility:
-      - condition: state
-        entity_id: cover.shellyswitch25_3494546b941d
-        state: "open"
-        visibility: false
-        hide:
-          state: open
-      - condition: state
-        entity_id: cover.shellyswitch25_3494546b941d
-        state: "closed"
-        visibility: true
+  - entity: cover.shellyswitch25_3494546b941d
+    type3d: hide
+    object_id: sweethome3d_opening_on_rail_1_Roller_Shutter_back_179_266_750
+    hide:
+      state: open
 zoom_areas: []
 selectionMode: no
 editModeNotifications: yes
