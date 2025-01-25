@@ -37,25 +37,21 @@ object_groups:
 
 object_group: ""
 entities:
-
-entity: cover.shellyswitch25_3494546b941d
-  type3d: door
-  door:
-    doortype: slide
-    side: up  # Rollo fährt jetzt von oben nach unten
-    direction: inner
-    percentage: "{{ 100 if is_state('cover.shellyswitch25_3494546b941d', 'open') else 0 }}"  # Steuerung der Bewegungsrichtung korrigiert
-    degrees: "45"
-  object_id: sweethome3d_opening_on_rail_1_Roller_Shutter_back_179_266_750
-  visibility:
-condition: state
-    entity_id: cover.shellyswitch25_3494546b941d
-    state: "open"
-    visibility: false  # Wenn offen (hochgefahren), wird es ausgeblendet
-condition: state
-  entity_id: cover.shellyswitch25_3494546b941d
-  state: "closed"
-  visibility: true  # Wenn geschlossen (heruntergefahren), wird es sichtbar
+  - entity: cover.shellyswitch25_3494546b941d
+    type3d: cover
+    object_id: sweethome3d_opening_on_rail_1_Roller_Shutter_base_179_266_750
+    cover:
+      pane: sweethome3d_opening_on_rail_1_Roller_Shutter_blades_179_266_750
+      side: down 
+    visibility:
+      - condition: state
+        entity_id: cover.shellyswitch25_3494546b941d
+        state: "open"
+        visibility: false  
+      - condition: state
+        entity_id: cover.shellyswitch25_3494546b941d
+        state: "closed"
+        visibility: true 
 zoom_areas:
 
 zoom: ""
